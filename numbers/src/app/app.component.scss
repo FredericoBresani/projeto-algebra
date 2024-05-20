@@ -1,0 +1,79 @@
+@import '../styles.scss';
+
+.app-body {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    flex-direction: column;
+    .inputs {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 90%;
+        .mantissa-length {
+            .select {
+                position: relative;
+                background-color: rgb(229, 174, 229);
+                padding: 0.5rem 1.5rem;
+                cursor: pointer;
+                border-radius: 0.5rem;
+                box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                .options {
+                    position: absolute;
+                    max-height: 5rem;
+                    overflow-y: scroll;
+                    top: 110%;
+                    width: 100%;
+                    z-index: +1;
+                    background-color: rgb(229, 174, 229);
+                    border-radius: 0.5rem;
+                    .option {
+                        border-bottom: 1px solid rgb(240, 222, 240);
+                        padding: 0.2rem 0.5rem;
+                    }
+                }
+            }
+        }
+    }
+    .numbers-background {
+        background-color: rgb(251, 251, 251);
+        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        width: 90%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        padding: 4rem 1rem;
+        position: relative;
+        .mark {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            align-items: center;
+            justify-content: center;
+            margin: 0 0 2rem 0;
+            .number {
+                font-family: $roboto;
+                font-weight: 500;
+                font-size: 20px;
+            }
+            .tick {
+                width: 1px;
+                height: 10px;
+                background-color: black;
+            }
+        }
+        .line {
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background-color: black;
+        }
+    }
+}

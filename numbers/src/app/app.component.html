@@ -1,0 +1,32 @@
+<div class="app-body">
+  <div class="inputs">
+    <div class="base">
+      <span></span>
+      <input>
+    </div>
+    <div class="mantissa-length">
+      <span></span>
+      <div class="select">
+        {{ selectedLength }}
+        <div class="options">
+          <div class="option" *ngFor="let option of lengthOptions">{{ option.text }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="k1">
+      <span></span>
+      <input>
+    </div>
+    <div class="k2">
+      <span></span>
+      <input>
+    </div>
+  </div>
+  <div class="numbers-background">
+    <div class="mark" *ngFor="let number of numbers">
+      <div class="number">{{ number }}</div>
+      <div class="tick"></div>
+    </div>
+    <div class="line"></div>
+  </div>
+</div>
