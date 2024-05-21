@@ -1,31 +1,66 @@
 <div class="app-body">
+  <div class="formula">
+    <div class="title">Representação normalizada de número ponto flutuante</div>
+    <span>n = &#177;0,m<sub>1</sub>,m<sub>2</sub>,...,m<sub>t</sub>&nbsp;x&nbsp;10<sup>z</sup></span><br>
+    <span>n =  &#177;{{mantissa}}&nbsp;x&nbsp;10<sup>{{z}}</sup></span>
+  </div>
   <div class="inputs">
     <div class="base">
-      <span></span>
-      <input>
+      <span>Base</span>
+      <div>10</div>
     </div>
     <div class="mantissa-length">
-      <span></span>
-      <div class="select">
-        {{ selectedLength }}
+      <span>Tamanho da mantissa</span>
+      <div class="select" (click)="openOrCloseOptions($event)">
+        {{ mantissaLength }}
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_72_3323)">
+            <path d="M8.125 3.75L5 6.875L1.875 3.75" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <defs>
+            <clipPath id="clip0_72_3323">
+            <rect width="10" height="10" fill="white"/>
+            </clipPath>
+            </defs>
+        </svg>
         <div class="options">
-          <div class="option" *ngFor="let option of lengthOptions">{{ option.text }}</div>
+          <div class="option" *ngFor="let option of lengthOptions" (click)="setMantissaLength(option.value)">{{ option.text }}</div>
         </div>
       </div>
     </div>
-    <div class="k1">
-      <span></span>
-      <input>
+    <div class="z">
+      <span>z</span>
+      <input [placeholder]="0" (keyup)="updateZValue($event)" (change)="updateZValue($event)" type="number">
     </div>
-    <div class="k2">
-      <span></span>
-      <input>
+    <!--
+      <div class="k1">
+        <span>k1</span>
+        <input>
+      </div>
+      <div class="k2">
+        <span>k2</span>
+        <input>
+      </div>
+    -->
+    <div class="mantissa">
+      <span>Número</span>
+      <input [placeholder]="0" (keyup)="updateMantissaValue($event)" type="number">
+    </div>
+    <div class="precision">
+      <span>Precisão</span>
+      <input [placeholder]="0" (keyup)="updatePrecision($event)" type="number">
+    </div>
+    <div class="zoom">
+      <div class="up" (click)="zoomUp()">+</div>
+      <div class="down" (click)="zoomDown()">-</div>
     </div>
   </div>
   <div class="numbers-background">
     <div class="mark" *ngFor="let number of numbers">
-      <div class="number">{{ number }}</div>
-      <div class="tick"></div>
+      <div class="zero" *ngIf="number == 0">{{ number }}</div>
+      <div class="number" *ngIf="number != 0">{{ number }}</div>
+      <div class="tick" *ngIf="number != 0"></div>
+      <div class="line"></div>
     </div>
     <div class="line"></div>
   </div>
