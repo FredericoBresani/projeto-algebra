@@ -60,11 +60,15 @@ export class AppComponent  implements OnInit {
   public setupMinAndMax(): void {
     this.minNumber = Math.pow(10, this.kmin - this.mantissaLength);
     this.maxNumber = 9;
-    for (let i = 0; i < (this.mantissaLength + this.kmax) - 1; i++) {
-      this.maxNumber = this.maxNumber * 10;
-      this.maxNumber += 9;
+    for (let i = 0; i < this.mantissaLength - 1; i++) {
+      if (i < this.kmax - 1) {
+        this.maxNumber = this.maxNumber * 10;
+        this.maxNumber += 9;
+      }
     }
-    this.maxNumber = this.maxNumber/Math.pow(10, this.mantissaLength);
+    for (let i = this.mantissaLength; i < this.kmax; i++) {
+      this.maxNumber *= 10;
+    }
     this.setScope();
     if (this.validSetup()) this.generateNumbers();
   }
@@ -82,11 +86,6 @@ export class AppComponent  implements OnInit {
     this.mantissaLength = n;
     if (this.kmin != 0 && this.kmax != 0) this.setupMinAndMax();
     if (this.validSetup()) this.generateNumbers();
-  }
-
-  public updateMantissaValue(event: Event): void {
-      this.mantissa = Number(Number('0.'+(event.target as HTMLInputElement).value).toFixed(this.mantissaLength));
-      if (this.validSetup()) this.generateNumbers();
   }
 
   public checkMantissaLength(event: Event): void {
@@ -139,8 +138,42 @@ export class AppComponent  implements OnInit {
         this.negativeNumbers.push(-this.maxNumber);
         addedLast = true;
       } else {
-        this.positiveNumbers.push(Number((i).toFixed(this.mantissaLength)));
-        this.negativeNumbers.push(Number((-i).toFixed(this.mantissaLength))); 
+        let temp = i;
+        if (Math.round(i).toString().length >= this.mantissaLength) {
+          temp = temp/Math.pow(10, Math.round(i).toString().length - this.mantissaLength);
+          temp = Number(Math.round(temp));
+          temp = temp*Math.pow(10, Math.round(i).toString().length - this.mantissaLength);
+          this.positiveNumbers.push(temp);
+          this.negativeNumbers.push(-temp); 
+        } else {
+          if (i < 1) {
+            let leftZeroCounter = 0;
+            let passedPoint = false;
+            let hasLeftZeros = true;
+            for (let j = 0; j < i.toString().length && hasLeftZeros; j++) {
+              if (i.toString().at(j) == '.') {
+                passedPoint = true;
+              }
+              if (passedPoint) {
+                if (i.toString().at(j) == '0') {
+                  leftZeroCounter++;
+                } else if (i.toString().at(j) != '.'){
+                  hasLeftZeros = false;
+                }
+              }
+            }
+            if (leftZeroCounter > 0) {
+              this.positiveNumbers.push(Number((i).toFixed(this.mantissaLength + (leftZeroCounter > -this.kmin ? -this.kmin : leftZeroCounter))));
+              this.negativeNumbers.push(Number((-i).toFixed(this.mantissaLength + (leftZeroCounter > -this.kmin ? -this.kmin : leftZeroCounter))));
+            } else {
+              this.positiveNumbers.push(Number((i).toFixed(this.mantissaLength)));
+              this.negativeNumbers.push(Number((-i).toFixed(this.mantissaLength)));
+            }
+          } else {
+            this.positiveNumbers.push(Number((i).toFixed(this.mantissaLength - Math.round(i).toString().length)));
+            this.negativeNumbers.push(Number((-i).toFixed(this.mantissaLength - Math.round(i).toString().length)));
+          }   
+        }
       }
     }
 
