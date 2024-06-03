@@ -19,8 +19,6 @@ export class AppComponent  implements OnInit {
 
   public lengthOptions: { text: string; value: number }[] = [];
 
-  public z: number = 0;
-
   public mantissa: number = 0;
 
   public validMantissaLength: boolean = false;
@@ -29,9 +27,17 @@ export class AppComponent  implements OnInit {
 
   public positiveNumbers: number[] = [];
 
-  public precision: number = 0;
+  public mantissas: number[] = [];
 
-  public lastNumber: number = 0;
+  public kmax: number = 0;
+
+  public kmin: number = 0;
+
+  public scope = 1;
+
+  public minNumber = 0;
+
+  public maxNumber = 0;
   
   constructor() {}
 
@@ -45,6 +51,24 @@ export class AppComponent  implements OnInit {
     }
   }
 
+  public setScope(): void {
+    while((this.scope*this.minNumber) < this.maxNumber) {
+      this.scope *= 2;
+    }
+  }
+
+  public setupMinAndMax(): void {
+    this.minNumber = Math.pow(10, this.kmin - this.mantissaLength);
+    this.maxNumber = 9;
+    for (let i = 0; i < (this.mantissaLength + this.kmax) - 1; i++) {
+      this.maxNumber = this.maxNumber * 10;
+      this.maxNumber += 9;
+    }
+    this.maxNumber = this.maxNumber/Math.pow(10, this.mantissaLength);
+    this.setScope();
+    if (this.validSetup()) this.generateNumbers();
+  }
+
   public openOrCloseOptions(event: Event): void {
     const targetedElement: HTMLElement = event.target as HTMLElement;
     if (targetedElement.getAttribute('class') == 'option') {
@@ -56,11 +80,7 @@ export class AppComponent  implements OnInit {
 
   public setMantissaLength(n: number): void {
     this.mantissaLength = n;
-    if (this.validSetup()) this.generateNumbers();
-  }
-
-  public updateZValue(event: Event): void {
-    this.z = Number((event.target as HTMLInputElement).value);
+    if (this.kmin != 0 && this.kmax != 0) this.setupMinAndMax();
     if (this.validSetup()) this.generateNumbers();
   }
 
@@ -77,76 +97,63 @@ export class AppComponent  implements OnInit {
     }
   }
 
-  public updatePrecision(event: Event): void {
-    this.precision = Number((event.target as HTMLInputElement).value);
-    if (this.validSetup()) this.generateNumbers();
+  public validSetup(): boolean {
+    return (this.mantissaLength != 0 && this.kmin != 0 && this.kmax != 0);
   }
 
-  public validSetup(): boolean {
-    return (this.z >= 0 && this.mantissa != 0 && this.mantissaLength != 0 && this.precision > 0);
+  public updatekminValue(event: Event): void {
+    this.kmin = Number((event.target as HTMLInputElement).value);
+    if (this.kmax != 0 && this.mantissaLength != 0) this.setupMinAndMax();
+  }
+
+  public updatekmaxValue(event: Event): void {
+    this.kmax = Number((event.target as HTMLInputElement).value);
+    if (this.kmin != 0 && this.mantissaLength != 0) this.setupMinAndMax();
   }
 
   public zoomUp(): void {
     if (this.validSetup()) {
-      if (this.positiveNumbers.length > 1) {
-        const decimalPart = Math.pow(10, this.z);
-        const lastNumber = this.positiveNumbers[this.positiveNumbers.length - 2];
-        this.lastNumber = lastNumber;
-        let interval = lastNumber/this.precision;
-        this.positiveNumbers = [];
-        this.negativeNumbers = [];
-        for (let i = 0; i < this.precision; i++) {
-          this.positiveNumbers.push(Number((interval*(i + 1)).toFixed(decimalPart.toString().length - 1)));
-          this.negativeNumbers.push(Number((-interval*(i + 1)).toFixed(decimalPart.toString().length - 1)));
-          
-        }
-        this.negativeNumbers = this.negativeNumbers.reverse();
-        this.numbers = [];
-        this.numbers.push(...this.negativeNumbers);
-        this.numbers.push(0);
-        this.numbers.push(...this.positiveNumbers);
+      if (this.scope > 1) {
+        this.scope = this.scope / 2;
+        this.generateNumbers();
       }
     }
   }
 
   public zoomDown(): void {
     if (this.validSetup()) {
-      if (this.positiveNumbers.length > 1) {
-        let interval = this.positiveNumbers[this.positiveNumbers.length - 1] - this.positiveNumbers[this.positiveNumbers.length - 2];
-        const lastNumber = this.positiveNumbers[this.positiveNumbers.length - 1] + interval;
-        this.lastNumber = lastNumber;
-        
-        this.positiveNumbers = [];
-        this.negativeNumbers = [];
-        for (let i = 0; i < this.precision; i++) {
-          this.positiveNumbers.push(interval*(i + 1));
-          this.negativeNumbers.push(-interval*(i + 1));
-        }
-        this.negativeNumbers = this.negativeNumbers.reverse();
-        this.numbers = [];
-        this.numbers.push(...this.negativeNumbers);
-        this.numbers.push(0);
-        this.numbers.push(...this.positiveNumbers);
+      if (this.scope * this.minNumber < this.maxNumber) {
+        this.scope = this.scope * 2;
+        this.generateNumbers();
       }
     }
   }
 
   public generateNumbers(): void {
-    const decimalPart = Math.pow(10, this.z);
-    const lastNumber = decimalPart * this.mantissa;
-    this.lastNumber = lastNumber;
-    let interval = lastNumber/this.precision;
     this.positiveNumbers = [];
     this.negativeNumbers = [];
-    for (let i = 0; i < this.precision; i++) {
-      this.positiveNumbers.push(Number((interval*(i + 1)).toFixed(decimalPart.toString().length)));
-      this.negativeNumbers.push(Number((-interval*(i + 1)).toFixed(decimalPart.toString().length)));
-      
+    let addedLast = false;
+    for (let i = 0, j = 0; j < 5 && !addedLast; i += (this.minNumber*this.scope), j++) {
+      if (i >= this.maxNumber) {
+        this.positiveNumbers.push(this.maxNumber);
+        this.negativeNumbers.push(-this.maxNumber);
+        addedLast = true;
+      } else {
+        this.positiveNumbers.push(Number((i).toFixed(this.mantissaLength)));
+        this.negativeNumbers.push(Number((-i).toFixed(this.mantissaLength))); 
+      }
     }
+
     this.negativeNumbers = this.negativeNumbers.reverse();
-    this.numbers = [];
-    this.numbers.push(...this.negativeNumbers);
-    this.numbers.push(0);
-    this.numbers.push(...this.positiveNumbers);
+    this.positiveNumbers.splice(0, 1);
+    
+    this.mantissas = [];
+    this.mantissas.push(...this.negativeNumbers);
+    this.mantissas.push(...this.positiveNumbers);
+    for (let i = 0; i < this.mantissas.length; i++) {
+      while(this.mantissas.indexOf(this.mantissas[i]) > i) {
+        this.mantissas.splice(this.mantissas.indexOf(this.mantissas[i]), 1);
+      }
+    }
   }
 }

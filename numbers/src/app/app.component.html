@@ -2,13 +2,8 @@
   <div class="formula">
     <div class="title">Representação normalizada de número ponto flutuante</div>
     <span>n = &#177;0,m<sub>1</sub>,m<sub>2</sub>,...,m<sub>t</sub>&nbsp;x&nbsp;10<sup>z</sup></span><br>
-    <span>n =  &#177;{{mantissa}}&nbsp;x&nbsp;10<sup>{{z}}</sup></span>
   </div>
   <div class="inputs">
-    <div class="base">
-      <span>Base</span>
-      <div>10</div>
-    </div>
     <div class="mantissa-length">
       <span>Tamanho da mantissa</span>
       <div class="select" (click)="openOrCloseOptions($event)">
@@ -28,27 +23,13 @@
         </div>
       </div>
     </div>
-    <div class="z">
-      <span>z</span>
-      <input [placeholder]="0" (keyup)="updateZValue($event)" (change)="updateZValue($event)" type="number">
+    <div class="kmin">
+      <span>kmin</span>
+      <input [placeholder]="0" (keyup)="updatekminValue($event)" type="number">
     </div>
-    <!--
-      <div class="k1">
-        <span>k1</span>
-        <input>
-      </div>
-      <div class="k2">
-        <span>k2</span>
-        <input>
-      </div>
-    -->
-    <div class="mantissa">
-      <span>Número</span>
-      <input [placeholder]="0" (keyup)="updateMantissaValue($event)" type="number">
-    </div>
-    <div class="precision">
-      <span>Precisão</span>
-      <input [placeholder]="0" (keyup)="updatePrecision($event)" type="number">
+    <div class="kmax">
+      <span>kmax</span>
+      <input [placeholder]="0" (keyup)="updatekmaxValue($event)" type="number">
     </div>
     <div class="zoom">
       <div class="up" (click)="zoomUp()">+</div>
@@ -56,7 +37,7 @@
     </div>
   </div>
   <div class="numbers-background">
-    <div class="mark" *ngFor="let number of numbers">
+    <div class="mark" *ngFor="let number of mantissas">
       <div class="zero" *ngIf="number == 0">{{ number }}</div>
       <div class="number" *ngIf="number != 0">{{ number }}</div>
       <div class="tick" *ngIf="number != 0"></div>

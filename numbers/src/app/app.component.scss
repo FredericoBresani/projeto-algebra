@@ -43,7 +43,7 @@
                 margin: 0.4rem 0 0 0;
             }
         }
-        .k1, .k2, .z, .mantissa, .precision, .zoom {
+        .k1, .k2, .z, .mantissa, .precision, .zoom, .kmin, .kmax {
             span {
                 font-size: 18px;
                 font-weight: 500;
@@ -67,6 +67,11 @@
             input::placeholder {
                 color: white;
             } 
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+            }
         }
         .mantissa {
             input {
@@ -170,7 +175,8 @@
         border-radius: 0.5rem;
         padding: 4rem 0rem;
         position: relative;
-        overflow-x: auto;
+        overflow-x: hidden;
+        justify-content: center;
         gap: 1rem;
         .mark {
             display: flex;
