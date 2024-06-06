@@ -1,0 +1,6 @@
+{
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "g++ main.cpp -std=c++17 -o main && main < test.txt"
+      }
+}
