@@ -60,7 +60,7 @@ PA = LU
 */
 
 bool isNumber(char c) {
-    return (c == '0' || c == '1' ||c == '2' ||c == '3' ||c == '4' ||c == '5' ||c == '6' ||c == '7' ||c == '8' || c == '9' || c == '.');
+    return (c == '0' || c == '1' ||c == '2' ||c == '3' ||c == '4' ||c == '5' ||c == '6' ||c == '7' ||c == '8' || c == '9' || c == '.' || c == '-');
 }
 
 class Tuple {
@@ -238,7 +238,7 @@ int main() {
         int variableIndex = -1;
         int peek = 1;
         int firstParentheses = 0;
-        for (int j = 1; j < solutions[i].length(); j++) {
+        for (int j = 1; j < solutions[i].length() - 1; j++) {
             while (isNumber(solutions[i].at(peek))) {
                 peek++;
             }
@@ -248,21 +248,21 @@ int main() {
                 j = peek;
             }
 
-            while (solutions[i].at(peek) != '(') {
+            while (solutions[i].at(peek) != '(' && peek < solutions[i].length() - 1) {
                 firstParentheses = j;
                 peek++;
             } 
-            peek++;
+            if (peek < solutions[i].length() - 1) peek++;
             j = peek;
             bool insideBracket = solutions[i].at(peek) != ')';
 
-            while (solutions[i].at(peek) != '/') {
+            while (solutions[i].at(peek) != '/' && peek < solutions[i].length() - 1) {
                 peek++;
             }
-            peek++;
+            if (peek < solutions[i].length() - 1) peek++;
             j = peek;
 
-            while (isNumber(solutions[i].at(peek)) && peek < solutions[i].size() - 1) {
+            while (isNumber(solutions[i].at(peek)) && peek < solutions[i].length() - 1) {
                 peek++;
             }
 
